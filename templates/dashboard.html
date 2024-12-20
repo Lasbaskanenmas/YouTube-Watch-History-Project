@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Watch History</title>
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            overflow-y: hidden; /* Prevent vertical scrolling */
+        }
+        header {
+            background-color: #FF0000;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 10px;
+            width: 95%;
+            height: 85vh; /* Adjust height to fit the viewport */
+            margin: 0 auto;
+        }
+        .full-width {
+            grid-column: span 2;
+            text-align: center;
+        }
+        .section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden; /* Crop images if necessary */
+        }
+        .section img {
+            width: 90%; /* Make images smaller */
+            height: auto;
+            max-height: 100%; /* Prevent images from overflowing sections */
+            object-fit: contain; /* Ensure aspect ratio is preserved */
+            border-radius: 5px;
+        }
+        .text-content {
+            max-width: 80%;
+            margin: 0 auto;
+            text-align: justify;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Your YouTube Watch History Visualized
+    </header>
+
+    <main>
+        <div class="grid-container">
+            <!-- Bar Plot -->
+            <div class="section">
+                <img src="{{ url_for('static', filename='top_channels.png') }}" alt="Top Channels">
+            </div>
+
+            <!-- Word Cloud -->
+            <div class="section">
+                <img src="{{ url_for('static', filename='wordcloud.png') }}" alt="Word Cloud">
+            </div>
+
+            <!-- Text Section -->
+            <div class="section full-width">
+                <div class="text-content">
+                    <p>
+                        In the top you see insights such as, your top 10 most viewed channels and notable trends in the titles of the videos you have watched. In the bottom, you will see time-related graphs, featuring a heatmap that can show you what hours and days you are most active on YouTube. Likewise, the line plot shows you the video-watching patterns of all your time spend on YouTube throughout the years. Does it align with your expectations?
+                    </p>
+                </div>
+            </div>
+
+            <!-- Line Plot -->
+            <div class="section">
+                <img src="{{ url_for('static', filename='lineplot.png') }}" alt="Line Plot">
+            </div>
+
+            <!-- Heatmap -->
+            <div class="section">
+                <img src="{{ url_for('static', filename='heatmap.png') }}" alt="Heatmap">
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2024 YouTube Dashboard | Powered by Flask
+    </footer>
+</body>
+</html>
+
+
