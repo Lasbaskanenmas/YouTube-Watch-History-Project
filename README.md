@@ -54,6 +54,9 @@ os.system('pip install json ijson numpy pandas seaborn matplotlib scikit-learn w
 3. The notebook will:
    - Clean and process the JSON data.
    - Generate visualizations for time-based trends, top channels, and common topics.
+   - Display general descriptive statistics, including:
+     - **Seasonal Trends**: Shows the total videos watched in each season (e.g., Winter, Summer, Autumn, Spring).
+     - **Top Topics**: Identifies the most common themes in the video titles, such as recurring words or phrases.
    - Launch a **Flask-based dashboard**.
 
 ### Expected Output
@@ -63,7 +66,8 @@ Once the notebook runs successfully:
    - A **Heatmap** depicting the days and hours of highest activity.
    - A **Bar Plot** listing your top 10 channels.
    - A **Word Cloud** illustrating frequently occurring words from video titles.
-2. All generated images are saved to the `static/` folder.
+2. **General Descriptive Statistics** are displayed directly in the notebook, summarizing seasonal video counts and the most common topics.
+3. All generated images are saved to the `static/` folder.
 
 ---
 
@@ -73,5 +77,3 @@ Once the notebook runs successfully:
 - The JSON file structure is consistent when downloaded from Google Takeout.
 
 Enjoy exploring your YouTube watch history!
-
-
