@@ -1,4 +1,4 @@
-# YouTube Watch History project
+# YouTube Watch History Project
 
 ## Introduction
 The YouTube Watch History project is a simple web-based tool that provides a general perspective of your YouTube viewing habits. It focuses on descriptive statistics such as viewing patterns over time and the most common topics seen in your YouTube history. The tool processes your YouTube data and presents the results through a Flask-based dashboard, which includes visualizations like:
