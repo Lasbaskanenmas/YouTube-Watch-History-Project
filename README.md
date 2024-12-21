@@ -1,7 +1,7 @@
-# YouTube Watch History Analyzer
+# YouTube Watch History project
 
 ## Introduction
-The YouTube Watch History Analyzer is a simple web-based tool that provides a general perspective of your YouTube viewing habits. It focuses on descriptive statistics such as viewing patterns over time and the most common topics seen in your YouTube history. The tool processes your YouTube data and presents the results through a Flask-based dashboard, which includes visualizations like:
+The YouTube Watch History project is a simple web-based tool that provides a general perspective of your YouTube viewing habits. It focuses on descriptive statistics such as viewing patterns over time and the most common topics seen in your YouTube history. The tool processes your YouTube data and presents the results through a Flask-based dashboard, which includes visualizations like:
 - **Line Plot**: Monthly trends in video views.
 - **Heatmap**: Hourly and weekly viewing patterns.
 - **Bar Plot**: Top 10 most-watched channels.
