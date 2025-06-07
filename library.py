@@ -317,7 +317,7 @@ class YouTubeWrangler:
         """
         # Group and sort the data
         views_channel = self.data.groupby(self.data['channel_name'], dropna=False)['channel_name'].count()
-        views_channel = views_channel.sort_values(ascending=False, kind='heapsort').head(10)  # Top 20 channels
+        views_channel = views_channel.sort_values(ascending=False, kind='heapsort').head(10)  # Top 10 channels
 
         # Define the custom colormap using 5 colors
         custom_colors = ['#8B0000', '#C0392B', '#FF0000', '#FFB6C1', '#E8E8E8']
