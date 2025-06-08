@@ -23,7 +23,6 @@ The goal is not deep analytics but to give users an easy-to-understand overview 
 ## Libraries Required
 Before running the program, ensure the following Python libraries are installed:
 
-- `json`
 - `ijson`
 - `numpy`
 - `pandas`
@@ -31,18 +30,17 @@ Before running the program, ensure the following Python libraries are installed:
 - `matplotlib`
 - `scikit-learn`
 - `wordcloud`
-- `threading`
 
 ### Installation Command
 Run the following command in your terminal:
 ```bash
-pip install json ijson numpy pandas seaborn matplotlib scikit-learn wordcloud
+pip install ijson numpy pandas seaborn matplotlib scikit-learn wordcloud
 ```
 
 If the above does not work, try the following snippet:
 ```python
 import os
-os.system('pip install json ijson numpy pandas seaborn matplotlib scikit-learn wordcloud')
+os.system('pip install ijson numpy pandas seaborn matplotlib scikit-learn wordcloud')
 ```
 *Note: This snippet attempts installation but may not work in all environments.*
 
