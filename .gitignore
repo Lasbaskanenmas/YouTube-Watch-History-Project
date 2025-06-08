@@ -1,0 +1,13 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Generated graph images
+static/*.png
+
+# Miscellaneous
+.DS_Store
+*.swp
