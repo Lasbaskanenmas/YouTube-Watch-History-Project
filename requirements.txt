@@ -1,0 +1,8 @@
+flask
+ijson
+numpy
+pandas
+seaborn
+matplotlib
+scikit-learn
+wordcloud
