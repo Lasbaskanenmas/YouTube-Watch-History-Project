@@ -32,8 +32,13 @@ class YouTubeReader:
             with open(self.file_path, 'r', encoding='utf-8') as file:
                 for item in ijson.items(file, 'item'):
                     yield item
-        except Exception as e:
-            raise FileNotFoundError(f"Error streaming JSON file: {e}")
+        except FileNotFoundError as e:
+            # Provide a clear error message if the file is missing
+            raise FileNotFoundError(
+                f"JSON file not found while streaming: {self.file_path}") from e
+        except Exception:
+            # Re-raise any unexpected exceptions without alteration
+            raise
 
     def load_JSON(self):
         """
@@ -42,8 +47,13 @@ class YouTubeReader:
         try:
             with open(self.file_path, 'r', encoding='utf-8') as file:
                 self.raw_data = json.load(file)
-        except Exception as e:
-            raise FileNotFoundError(f"Error loading JSON file: {e}")
+        except FileNotFoundError as e:
+            # Raise a more informative error if the JSON file is missing
+            raise FileNotFoundError(
+                f"JSON file not found while loading: {self.file_path}") from e
+        except Exception:
+            # Propagate all other exceptions for upstream handling
+            raise
 
     def to_dataframe(self):
         """
