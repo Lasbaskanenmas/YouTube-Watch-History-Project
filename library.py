@@ -2,7 +2,6 @@ import os
 import json
 import ijson                                                    # type: ignore
 import calendar
-import numpy as np
 import pandas as pd
 import seaborn as sns                                           # type: ignore
 import matplotlib.pyplot as plt

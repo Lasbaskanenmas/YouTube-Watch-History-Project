@@ -2,26 +2,11 @@ import os
 import sys
 import subprocess
 from flask import Flask, render_template, send_file, redirect, url_for  # type: ignore
-from threading import Thread
 from library import YouTubeReader, YouTubeWrangler, YouTubeTextStats
 
 # Resolve the path to the static folder relative to the script location
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_FOLDER = os.path.join(BASE_DIR, 'static')
-
-# Function to install missing libraries
-def install_libraries(libraries):
-    for lib in libraries:
-        try:
-            __import__(lib)  # Try importing the library
-        except ImportError:
-            print(f"Installing {lib}...")
-            subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
-        except ModuleNotFoundError:
-            print(f"Installing {lib}...")
-            subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
-        else:
-            print(f"{lib} is already installed.")
 
 class YouTubePlots:
     def __init__(self, file_path):
