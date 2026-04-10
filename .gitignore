@@ -183,3 +183,6 @@ logs/data/
 .DS_Store
 
 models/
+
+# other
+eda.ipynb
