@@ -51,7 +51,7 @@ YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 DB_CONFIG = {
     "dbname":   "youtube_analytics",
     "user":     "postgres",     # <-- Update if different
-    "password": "qdw83nmm",     # <-- Update with your password
+    "password": os.getenv("DB_PASSWORD", "your_password_here"),
     "host":     "localhost",
     "port":     5432
 }
