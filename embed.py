@@ -78,7 +78,7 @@ load_dotenv()
 DB_CONFIG = {
     "dbname":   "youtube_analytics",
     "user":     "postgres",     # <-- Update if different
-    "password": os.getenv("DB_PASSWORD", "your_password_here"),
+    "password": os.getenv("DB_PASSWORD", ""),
     "host":     "localhost",
     "port":     5432
 }
