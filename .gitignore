@@ -181,3 +181,5 @@ cython_debug/
 .cursorindexingignoremodels/
 logs/data/
 .DS_Store
+
+models/
