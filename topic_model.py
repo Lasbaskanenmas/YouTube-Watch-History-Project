@@ -120,11 +120,6 @@ except ImportError:
     raise ImportError("Install tqdm: pip install tqdm")
 
 try:
-    from langdetect import detect, LangDetectException
-except ImportError:
-    raise ImportError("Install langdetect: pip install langdetect")
-
-try:
     from sklearn.feature_extraction.text import CountVectorizer
 except ImportError:
     raise ImportError("Install scikit-learn: pip install scikit-learn")
@@ -250,22 +245,6 @@ def configure_numba(logger: logging.Logger):
     logger.info(f"numba threads: {safe_threads} of {total_threads} (2 reserved for OS)")
 
 # ============================================================================
-# Detecting Keyword Language
-# ============================================================================
-def detect_keyword_language(keywords: list[str]) -> str:
-    """
-    Detect the dominant language of a topic's keywords.
-    Returns an ISO 639-1 language code e.g. 'en', 'da', 'es', 'de'.
-    Falls back to 'en' if detection fails.
-    """
-    try:
-        sample = " ".join(keywords[:8])
-        return detect(sample)
-    except LangDetectException:
-        return "en"
-
-
-# ============================================================================
 # Ollama Label Generation
 # ============================================================================
 # Ollama refusal detection — if the model refuses, fall back to keywords
@@ -278,15 +257,19 @@ REFUSAL_PATTERNS = [
 
 def generate_label_ollama(keywords: list[str],
                            category_name: str,
-                           logger: logging.Logger) -> str:
+                           logger: logging.Logger,
+                           channel_language: str | None = None) -> str:
     """
-    Generate a human-readable topic label using Ollama (Llama 3.2 3B).
+    Generate a human-readable topic label using Ollama (Mistral 7B).
     Falls back to a keyword-based label if Ollama is unavailable.
 
     Args:
-        keywords:      Top keywords for this topic from BERTopic
-        category_name: YouTube category (Level 1 context for the model)
-        logger:        Logger instance
+        keywords:         Top keywords for this topic from BERTopic
+        category_name:    YouTube category (Level 1 context for the model)
+        logger:           Logger instance
+        channel_language: ISO 639-1 code from dim_channels.primary_language
+                          (majority language of the cluster's channels).
+                          None means assume English.
 
     Returns:
         A concise human-readable label string (3–5 words)
@@ -294,18 +277,20 @@ def generate_label_ollama(keywords: list[str],
     # 1. Build keyword string first
     keyword_str = ", ".join(keywords[:10])
 
-    # 2. Detect language using keywords
-    lang = detect_keyword_language(keywords)
+    # 2. Build language note from verified channel-level signal
+    LANG_NAMES = {
+        "da": "Danish", "es": "Spanish", "de": "German",
+        "ka": "Georgian", "fr": "French", "nl": "Dutch",
+        "no": "Norwegian", "sv": "Swedish", "it": "Italian",
+        "pt": "Portuguese", "pl": "Polish", "ru": "Russian",
+        "ar": "Arabic", "ja": "Japanese", "ko": "Korean",
+        "zh": "Chinese", "fi": "Finnish"
+    }
     lang_note = ""
-    if lang != "en":
-        lang_map = {
-            "da": "Danish", "es": "Spanish", "de": "German",
-            "ka": "Georgian", "fr": "French", "nl": "Dutch",
-            "no": "Norwegian", "sv": "Swedish"
-        }
-        lang_name = lang_map.get(lang, f"non-English ({lang})")
-        lang_note = f"Note: keywords appear to be in {lang_name}.\n"
-    
+    if channel_language and channel_language != "en":
+        lang_name = LANG_NAMES.get(channel_language, f"non-English ({channel_language})")
+        lang_note = f"Note: this cluster is primarily {lang_name} content.\n"
+
     # 3. Build prompt using both
     prompt = (
         f"You are labelling a YouTube topic cluster.\n"
@@ -514,6 +499,28 @@ def run_remap(conn, cur, logger: logging.Logger) -> dict:
     logger.info(f"Loaded {len(video_ids):,} embeddings  "
                 f"(shape: {embeddings.shape})")
 
+    # Load channel-level language tags from dim_channels
+    logger.info("Loading channel language tags...")
+    cur.execute("""
+        SELECT channel_id, primary_language
+        FROM   yt.dim_channels
+        WHERE  primary_language IS NOT NULL
+    """)
+    channel_language_map: dict[int, str] = {
+        row[0]: row[1] for row in cur.fetchall()
+    }
+
+    # Build video → channel_id map for language lookup
+    cur.execute("""
+        SELECT video_id, channel_id
+        FROM   yt.dim_videos
+        WHERE  status = 'active'
+    """)
+    video_channel_map: dict[str, int] = {
+        row[0]: row[1] for row in cur.fetchall()
+    }
+    logger.info(f"  {len(channel_language_map):,} channels with language tags")
+
     # ----------------------------------------------------------------
     # STEP 2: Build and fit BERTopic model
     # ----------------------------------------------------------------
@@ -620,8 +627,20 @@ def run_remap(conn, cur, logger: logging.Logger) -> dict:
             category_id     = assign_category(cluster_vids, video_category_map)
             category_name   = category_name_map.get(category_id, "Unknown")
 
-            # LLM label
-            label = generate_label_ollama(keywords, category_name, logger)
+            # Resolve majority channel language for this cluster
+            cluster_langs = [
+                channel_language_map[ch_id]
+                for vid in cluster_vids
+                if (ch_id := video_channel_map.get(vid)) is not None
+                and ch_id in channel_language_map
+            ]
+            cluster_language = Counter(cluster_langs).most_common(1)[0][0] \
+                if cluster_langs else None
+
+            # LLM label — with verified language context
+            label = generate_label_ollama(
+                keywords, category_name, logger, cluster_language
+            )
 
             topic_rows.append({
                 "bertopic_id":  bertopic_id,
