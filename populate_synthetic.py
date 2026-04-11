@@ -12,6 +12,7 @@ Usage:
     3. Run: python populate_synthetic.py
 """
 
+import os
 import random
 import hashlib
 from datetime import datetime, timedelta, timezone
@@ -37,7 +38,7 @@ except ImportError:
 DB_CONFIG = {
     "dbname":   "youtube_analytics",
     "user":     "postgres",           # <-- Update if different
-    "password": "password", # <-- Update with your password
+    "password": os.getenv("DB_PASSWORD", ""), # <-- Update with your password
     "host":     "localhost",
     "port":     5432
 }
